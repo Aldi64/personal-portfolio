@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { SiGithub, SiInstagram, SiYoutube, SiDiscord } from 'react-icons/si';
-import { FaXTwitter } from 'react-icons/fa6';
+import { SiGithub, SiInstagram } from 'react-icons/si';
 import { FaLinkedin } from 'react-icons/fa';
 import { HiMail, HiUser, HiChatAlt2, HiLocationMarker } from 'react-icons/hi';
 import { IoCopyOutline, IoOpenOutline } from 'react-icons/io5';

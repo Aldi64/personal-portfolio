@@ -107,7 +107,7 @@ export default function Hero() {
         className="flex-1 flex justify-center w-full"
       >
         <img
-          src="public\images\profile-photo.jpeg"
+          src="images/profile-photo.jpeg"
           alt="Aldi Putra"
           className="w-full max-w-[280px] aspect-[4/5] object-cover rounded-2xl"
         />

@@ -5,22 +5,6 @@ export const social = {
   email: "aldiputradjojo64@gmail.com",
 }
 
-export const project = {
-  title: "EduVerse",
-  tagline: "A functional LMS built inside Roblox Studio for my thesis project.",
-  image: "/images/eduverse.png",
-  tags: ["Roblox Studio", "Lua", "LMS"],
-  narrative:
-    "For my thesis at Swiss German University, I wanted to test whether a game engine could double as a genuine learning environment — not a gimmick, but something that actually held a course structure. EduVerse is the result: a working Learning Management System built entirely inside Roblox Studio, where lessons live as 3D spaces students walk through rather than pages they scroll past.",
-  features: [
-    "Course and lesson structure built inside a 3D environment",
-    "Per-student progress tracking",
-    "Interactive in-world quizzes",
-  ],
-  builtWith: ["Roblox Studio", "Lua", "DataStore"],
-  github: "https://github.com/Aldi64",
-}
-
 export const skillCategories = [
   {
     label: "Languages",

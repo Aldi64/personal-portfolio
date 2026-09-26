@@ -7,7 +7,7 @@ import Education from './components/Education';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import AllProjects from './pages/Allprojects';
+import AllProjects from './pages/AllProjects';
 
 function Home() {
   return (

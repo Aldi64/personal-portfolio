@@ -1,30 +1,32 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
 
 const sections = [
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
-]
+  { id: 'about', label: 'About' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'work', label: 'Work' },
+  { id: 'education', label: 'Education' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'contact', label: 'Contact' },
+];
 
 export default function Nav() {
-  const [active, setActive] = useState("about")
+  const [active, setActive] = useState('about');
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id)
-        })
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
       },
-      { rootMargin: "-40% 0px -50% 0px" }
-    )
+      { rootMargin: '-40% 0px -50% 0px' },
+    );
     sections.forEach((s) => {
-      const el = document.getElementById(s.id)
-      if (el) observer.observe(el)
-    })
-    return () => observer.disconnect()
-  }, [])
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-bg/85 backdrop-blur-sm border-b border-border">
@@ -42,8 +44,8 @@ export default function Nav() {
                 href={`#${s.id}`}
                 className={`text-sm transition-colors ${
                   active === s.id
-                    ? "text-accent font-medium"
-                    : "text-ink-soft hover:text-ink"
+                    ? 'text-accent font-medium'
+                    : 'text-ink-soft hover:text-ink'
                 }`}
               >
                 {s.label}
@@ -53,5 +55,5 @@ export default function Nav() {
         </ul>
       </nav>
     </header>
-  )
+  );
 }

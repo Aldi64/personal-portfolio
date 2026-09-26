@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaLinkedin } from 'react-icons/fa6';
 import { SiGithub, SiInstagram } from 'react-icons/si';
+import { TbDownload } from 'react-icons/tb';
 import { social } from '../data/content';
 
 const container = {
@@ -86,10 +87,12 @@ export default function Hero() {
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
           <a
-            href="#projects"
-            className="bg-accent text-card text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-accent-dark transition-colors"
+            href="documents/aldi-putra-cv.pdf"
+            download="Aldi-Putra-CV.pdf"
+            className="inline-flex items-center gap-2 bg-accent text-card text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-accent-dark transition-colors"
           >
-            View projects
+            <TbDownload className="text-base" />
+            Download CV
           </a>
           <a
             href="#contact"
@@ -109,7 +112,7 @@ export default function Hero() {
         <img
           src="images/profile-photo.jpeg"
           alt="Aldi Putra"
-          className="w-full max-w-[280px] aspect-[4/5] object-cover rounded-2xl"
+          className="w-full max-w-96 aspect-4/5 object-cover rounded-2xl"
         />
       </motion.div>
     </section>

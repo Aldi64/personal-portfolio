@@ -1,11 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
-import { certifications } from '../data/content';
+import { client, urlFor } from '../lib/sanity';
+import type { Certification } from '../types/types';
+
+const QUERY = `*[_type == "certification"] | order(coalesce(order, 999) asc, _createdAt asc) {
+  name,
+  issuer,
+  image
+}`;
 
 export default function Certifications() {
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    client
+      .fetch(QUERY)
+      .then((docs: any[]) => {
+        if (cancelled) return;
+        const mapped: Certification[] = docs.map((d) => ({
+          name: d.name,
+          issuer: d.issuer,
+          image: urlFor(d.image).width(1200).fit('max').url(),
+        }));
+        setCertifications(mapped);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function go(newIndex: number, dir: number) {
     setDirection(dir);
@@ -15,6 +45,24 @@ export default function Certifications() {
   function onDragEnd(_: unknown, info: { offset: { x: number } }) {
     if (info.offset.x < -50) go(index + 1, 1);
     else if (info.offset.x > 50) go(index - 1, -1);
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <p className="text-ink text-sm font-medium mb-5">Certifications</p>
+        <div className="w-full max-w-[600px] mx-auto aspect-[3/2] bg-surface rounded-lg animate-pulse" />
+      </div>
+    );
+  }
+
+  if (certifications.length === 0) {
+    return (
+      <div>
+        <p className="text-ink text-sm font-medium mb-5">Certifications</p>
+        <p className="text-ink-soft text-sm">No certifications added yet.</p>
+      </div>
+    );
   }
 
   const current = certifications[index];
@@ -32,7 +80,7 @@ export default function Certifications() {
         </button>
 
         <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
-          <div className="w-full max-w-[440px] aspect-[3/2] relative bg-surface rounded-lg">
+          <div className="w-full max-w-[600px] aspect-[3/2] relative bg-surface rounded-lg">
             <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.img
                 key={index}

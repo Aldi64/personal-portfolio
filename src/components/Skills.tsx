@@ -4,11 +4,21 @@ import { client } from '../lib/sanity';
 import type { SkillCategory } from '../types/types';
 import { skillIcons } from '../data/skillIcons';
 import Certifications from './Certifications';
+import SkillCard from './SkillCard';
 
 const QUERY = `*[_type == "skills"] | order(coalesce(order, 999) asc, _createdAt asc) {
   label,
   skills
 }`;
+
+const iconFor = (name: string) => {
+  const def = skillIcons[name];
+  return def ? (
+    <span style={{ color: def.color }}>{def.icon}</span>
+  ) : (
+    <span className="text-ink-muted">•</span>
+  );
+};
 
 export default function Skills() {
   const [categories, setCategories] = useState<SkillCategory[]>([]);
@@ -57,48 +67,13 @@ export default function Skills() {
               </div>
             ))
           : categories.map((cat, i) => (
-              <motion.div
+              <SkillCard
                 key={cat.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="bg-card border border-border rounded-2xl p-6"
-              >
-                <div className="flex items-center gap-2 mb-5">
-                  <span className="w-2 h-2 rounded-full bg-accent shrink-0" />
-                  <span className="font-display text-base text-ink">
-                    {cat.label}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  {cat.skills.map((skill) => {
-                    const def = skillIcons[skill];
-                    return (
-                      <div
-                        key={skill}
-                        className="flex flex-col items-center gap-2 p-3 border border-border rounded-lg text-center"
-                      >
-                        {def ? (
-                          <span
-                            className="text-2xl leading-none"
-                            style={{ color: def.color }}
-                          >
-                            {def.icon}
-                          </span>
-                        ) : (
-                          <span className="text-2xl leading-none text-ink-muted">
-                            •
-                          </span>
-                        )}
-                        <span className="text-xs text-ink-soft leading-tight">
-                          {skill}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </motion.div>
+                index={i}
+                label={cat.label}
+                skills={cat.skills}
+                iconFor={iconFor}
+              />
             ))}
       </div>
 

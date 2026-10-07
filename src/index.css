@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 @theme {
+
+  --color-background: #E7E3DB;
+  --color-foreground: #2B2B2B;
+  --color-muted-foreground: #6B6860;
+  --color-primary: #D9642C;
+  --color-primary-foreground: #ffffff;
+  --color-border: #D3CEC3;
+  --color-accent: #DDD8CE;
+
   /* Page background (now a light warm gray) */
   --color-bg: #E7E3DB;
 
@@ -55,4 +64,18 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+@keyframes star-drift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-2000px); }
+}
+
+.star-layer {
+  animation: star-drift var(--star-duration, 100s) linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-layer { animation: none; }
 }

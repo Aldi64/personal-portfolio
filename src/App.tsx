@@ -8,6 +8,7 @@ import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import AllProjects from './pages/AllProjects';
+import ShapesBackground from './components/ShapesBackground';
 
 function Home() {
   return (
@@ -28,10 +29,13 @@ function Home() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/projects" element={<AllProjects />} />
-    </Routes>
+    <>
+      <ShapesBackground />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/projects" element={<AllProjects />} />
+      </Routes>
+    </>
   );
 }
 

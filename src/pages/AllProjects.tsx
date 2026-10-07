@@ -135,42 +135,54 @@ export default function AllProjects() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filtered.map((p) => (
-              <motion.button
+              // Wrapper handles the scroll-in animation so it doesn't
+              // conflict with the layoutId transform on the button.
+              <motion.div
                 key={p.title}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}
                 transition={{ duration: 0.5 }}
-                onClick={() => setSelected(p)}
-                className="text-left w-full bg-card border border-border rounded-2xl overflow-hidden hover:border-border-strong transition-colors group"
+                className="h-full"
               >
-                <div className="aspect-video overflow-hidden relative">
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                  />
-                  <span className="absolute top-3 left-3 text-xs font-medium bg-card/90 text-ink-soft border border-border rounded-full px-3 py-1 backdrop-blur-sm">
-                    {p.category}
-                  </span>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-display text-lg text-ink mb-2">
-                    {p.title}
-                  </h3>
-                  <p className="text-ink-soft text-sm mb-4">{p.tagline}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {p.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="text-xs text-ink-muted border border-border rounded-full px-3 py-1"
-                      >
-                        {t}
-                      </span>
-                    ))}
+                <motion.button
+                  layoutId={`project-card-${p.title}`}
+                  onClick={() => setSelected(p)}
+                  whileHover="hover"
+                  style={{ borderRadius: 16 }}
+                  className="text-left w-full h-full bg-card border border-border overflow-hidden hover:border-border-strong transition-colors"
+                >
+                  <div className="aspect-video overflow-hidden relative">
+                    <motion.img
+                      layoutId={`project-image-${p.title}`}
+                      src={p.image}
+                      alt={p.title}
+                      variants={{ hover: { scale: 1.03 } }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute top-3 left-3 text-xs font-medium bg-card/90 text-ink-soft border border-border rounded-full px-3 py-1 backdrop-blur-sm">
+                      {p.category}
+                    </span>
                   </div>
-                </div>
-              </motion.button>
+                  <div className="p-6">
+                    <h3 className="font-display text-lg text-ink mb-2">
+                      {p.title}
+                    </h3>
+                    <p className="text-ink-soft text-sm mb-4">{p.tagline}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {p.tags.map((t) => (
+                        <span
+                          key={t}
+                          className="text-xs text-ink-muted border border-border rounded-full px-3 py-1"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.button>
+              </motion.div>
             ))}
           </div>
         )}

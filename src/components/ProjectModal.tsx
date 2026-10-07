@@ -53,36 +53,48 @@ export default function ProjectModal({
   return (
     <AnimatePresence>
       {open && project && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm"
-          onClick={onClose}
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-card rounded-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto border border-border relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+            onClick={onClose}
+          />
+
+          {/* Expanded card: shares layoutId with the card in Projects.tsx */}
+          <motion.div
+            layoutId={`project-card-${project.title}`}
+            style={{ borderRadius: 16 }}
+            className="bg-card max-w-3xl w-full max-h-[85vh] overflow-y-auto border border-border relative z-10"
           >
-            <button
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.15 }}
               onClick={onClose}
               aria-label="Close case study"
               className="absolute top-4 right-4 w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center text-ink-soft hover:text-ink hover:border-border-strong transition-colors z-10"
             >
               <TbX className="text-lg" />
-            </button>
+            </motion.button>
 
-            <img
+            <motion.img
+              layoutId={`project-image-${project.title}`}
               src={project.image}
               alt={project.title}
-              className="w-full aspect-video object-cover rounded-t-2xl"
+              className="w-full aspect-video object-cover"
             />
 
-            <div className="p-6 md:p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.1 } }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+              className="p-6 md:p-8"
+            >
               <span className="inline-block text-xs font-medium text-ink-muted border border-border rounded-full px-3 py-1 mb-3">
                 {project.category}
               </span>
@@ -163,7 +175,7 @@ export default function ProjectModal({
                   View on GitHub
                 </a>
               )}
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Fullscreen lightbox for preview media */}
@@ -242,7 +254,7 @@ export default function ProjectModal({
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

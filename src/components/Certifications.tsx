@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
 import { client, urlFor } from '../lib/sanity';
 import type { Certification } from '../types/types';
@@ -10,11 +9,14 @@ const QUERY = `*[_type == "certification"] | order(coalesce(order, 999) asc, _cr
   image
 }`;
 
+// Slide width drives the whole carousel (container, slides, translate step)
+const SLIDE = 'w-[min(88vw,760px)] aspect-[3/2]';
+
 export default function Certifications() {
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const touchX = useRef<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,21 +39,25 @@ export default function Certifications() {
     };
   }, []);
 
-  function go(newIndex: number, dir: number) {
-    setDirection(dir);
+  function go(newIndex: number) {
     setIndex((newIndex + certifications.length) % certifications.length);
   }
 
-  function onDragEnd(_: unknown, info: { offset: { x: number } }) {
-    if (info.offset.x < -50) go(index + 1, 1);
-    else if (info.offset.x > 50) go(index - 1, -1);
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (dx < -50) go(index + 1);
+    else if (dx > 50) go(index - 1);
   }
 
   if (loading) {
     return (
       <div>
-        <p className="text-ink text-sm font-medium mb-5">Certifications</p>
-        <div className="w-full max-w-[600px] mx-auto aspect-[3/2] bg-surface rounded-lg animate-pulse" />
+        <h3 className="text-ink text-sm font-medium mb-5">Certifications</h3>
+        <div
+          className={`${SLIDE} mx-auto bg-surface rounded-lg animate-pulse`}
+        />
       </div>
     );
   }
@@ -59,7 +65,7 @@ export default function Certifications() {
   if (certifications.length === 0) {
     return (
       <div>
-        <p className="text-ink text-sm font-medium mb-5">Certifications</p>
+        <h3 className="text-ink text-sm font-medium mb-5">Certifications</h3>
         <p className="text-ink-soft text-sm">No certifications added yet.</p>
       </div>
     );
@@ -69,61 +75,94 @@ export default function Certifications() {
 
   return (
     <div>
-      <p className="text-ink text-sm font-medium mb-5">Certifications</p>
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => go(index - 1, -1)}
-          aria-label="Previous certificate"
-          className="hidden md:flex w-8 h-8 rounded-full border border-border items-center justify-center text-ink-muted hover:text-ink hover:border-border-strong transition-colors shrink-0"
-        >
-          <TbChevronLeft />
-        </button>
+      <h3 className="text-ink text-sm font-medium mb-5">Certifications</h3>
 
-        <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
-          <div className="w-full max-w-[600px] aspect-[3/2] relative bg-surface rounded-lg">
-            <AnimatePresence initial={false} custom={direction} mode="wait">
-              <motion.img
-                key={index}
-                src={current.image}
-                alt={current.name}
-                custom={direction}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.6}
-                onDragEnd={onDragEnd}
-                initial={{ opacity: 0, x: direction >= 0 ? 40 : -40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction >= 0 ? -40 : 40 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="w-full h-full object-contain rounded-lg cursor-grab active:cursor-grabbing"
-              />
-            </AnimatePresence>
-          </div>
-          <div className="text-center">
-            <p className="text-ink text-sm font-medium">{current.name}</p>
-            <p className="text-ink-muted text-xs">{current.issuer}</p>
-          </div>
-          <div className="flex gap-1.5 mt-1">
+      <div
+        className="overflow-hidden py-4"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Certifications"
+        onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className={`relative mx-auto ${SLIDE}`}>
+          <ul
+            className="absolute top-0 left-0 flex -mx-3 transition-transform duration-700 ease-in-out"
+            style={{
+              transform: `translateX(-${index * (100 / certifications.length)}%)`,
+            }}
+          >
+            {certifications.map((c, i) => (
+              <li
+                key={c.name}
+                aria-label={c.name}
+                onClick={() => i !== index && go(i)}
+                className={`shrink-0 mx-3 ${SLIDE} [perspective:1200px] ${
+                  i === index ? '' : 'cursor-pointer'
+                }`}
+              >
+                <div
+                  className="h-full w-full overflow-hidden rounded-lg border border-border bg-surface"
+                  style={{
+                    transform:
+                      i === index
+                        ? 'scale(1) rotateX(0deg)'
+                        : 'scale(0.98) rotateX(8deg)',
+                    transformOrigin: 'bottom',
+                    opacity: i === index ? 1 : 0.5,
+                    transition:
+                      'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s',
+                  }}
+                >
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    draggable={false}
+                    className="h-full w-full object-contain select-none"
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-3 mt-2">
+        <div className="text-center">
+          <p className="text-ink text-sm font-medium">{current.name}</p>
+          <p className="text-ink-muted text-xs">{current.issuer}</p>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => go(index - 1)}
+            aria-label="Previous certificate"
+            className="hidden md:flex w-10 h-10 rounded-full border border-border items-center justify-center text-ink-muted hover:text-ink hover:border-border-strong transition-colors shrink-0"
+          >
+            <TbChevronLeft />
+          </button>
+
+          <div className="flex gap-1.5">
             {certifications.map((_, i) => (
               <button
                 key={i}
                 aria-label={`Go to certificate ${i + 1}`}
-                onClick={() => go(i, i > index ? 1 : -1)}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                onClick={() => go(i)}
+                className={`w-2 h-2 rounded-full transition-colors ${
                   i === index ? 'bg-accent' : 'bg-border-strong'
                 }`}
               />
             ))}
           </div>
-        </div>
 
-        <button
-          onClick={() => go(index + 1, 1)}
-          aria-label="Next certificate"
-          className="hidden md:flex w-8 h-8 rounded-full border border-border items-center justify-center text-ink-muted hover:text-ink hover:border-border-strong transition-colors shrink-0"
-        >
-          <TbChevronRight />
-        </button>
+          <button
+            onClick={() => go(index + 1)}
+            aria-label="Next certificate"
+            className="hidden md:flex w-10 h-10 rounded-full border border-border items-center justify-center text-ink-muted hover:text-ink hover:border-border-strong transition-colors shrink-0"
+          >
+            <TbChevronRight />
+          </button>
+        </div>
       </div>
     </div>
   );

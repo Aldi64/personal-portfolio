@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { TbMenu2, TbX } from 'react-icons/tb';
-import GooeyNav from './Gooeynav';
+import GooeyNav from './GooeyNav';
 
 const sections = [
   { id: 'about', label: 'About' },

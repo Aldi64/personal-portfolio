@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { FaLinkedin } from 'react-icons/fa6';
 import { SiGithub, SiInstagram } from 'react-icons/si';
-import { TbDownload } from 'react-icons/tb';
+import AttractButton from '@/components/ui/attract-button';
 import { social } from '../data/content';
 
 const container = {
@@ -18,6 +18,13 @@ const item = {
     y: 0,
     transition: { duration: 0.5, ease: 'easeOut' as const },
   },
+};
+
+const handleDownloadCV = () => {
+  const a = document.createElement('a');
+  a.href = 'documents/aldi-putra-cv.pdf';
+  a.download = 'Aldi-Putra-CV.pdf';
+  a.click();
 };
 
 export default function Hero() {
@@ -86,14 +93,7 @@ export default function Hero() {
           </a>
         </motion.div>
         <motion.div variants={item} className="flex gap-3">
-          <a
-            href="documents/aldi-putra-cv.pdf"
-            download="Aldi-Putra-CV.pdf"
-            className="inline-flex items-center gap-2 bg-accent text-card text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-accent-dark transition-colors"
-          >
-            <TbDownload className="text-base" />
-            Download CV
-          </a>
+          <AttractButton label="Download CV" onClick={handleDownloadCV} />
           <a
             href="#contact"
             className="border border-border-strong text-ink text-sm font-medium px-5 py-2.5 rounded-lg hover:border-ink-soft transition-colors"

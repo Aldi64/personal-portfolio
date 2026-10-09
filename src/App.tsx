@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
+import HowIWork from './components/HowIWork';
 import Projects from './components/Projects';
 import Work from './components/Work';
 import Education from './components/Education';
@@ -16,6 +17,7 @@ function Home() {
       <Nav />
       <main>
         <Hero />
+        <HowIWork />
         <Projects />
         <Work />
         <Education />
